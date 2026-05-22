@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SiteHeader } from "@/components/SiteHeader";
 import { blackHanSans } from "./fonts";
 import "./globals.css";
 
@@ -29,7 +30,11 @@ export default function RootLayout({
   return (
     <html lang="ko" className={blackHanSans.variable}>
       <body className="min-h-screen bg-snack-50 font-sans text-neutral-900 antialiased">
+        <SiteHeader />
         {children}
+        <footer className="mx-auto mt-16 max-w-5xl px-6 pb-10 text-center text-xs text-neutral-500">
+          탕비실 · Next.js 14 · Tailwind CSS · Vercel
+        </footer>
       </body>
     </html>
   );
