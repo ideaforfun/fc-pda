@@ -1,193 +1,161 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  type Mood,
-  type Snack,
-  getTopSnackByMood,
-  moods,
-  snacks,
-} from "@/lib/data";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { MOODS, SNACKS, getRankedSnacks } from "@/lib/data";
 import { TangiMascot } from "./TangiMascot";
 
-type Phase = "idle" | "drawing" | "result";
-
-const SLOT_COUNT = 9;
+const ROW_LABELS = ["A", "B"] as const;
 
 export function VendingMachine() {
-  const [selectedMoodId, setSelectedMoodId] = useState<string | null>(null);
-  const [phase, setPhase] = useState<Phase>("idle");
-  const [result, setResult] = useState<Snack | null>(null);
+  const router = useRouter();
+  const [moodId, setMoodId] = useState<string>("tired");
+  const [pulling, setPulling] = useState(false);
 
-  const slotSnacks = useMemo(() => snacks.slice(0, SLOT_COUNT), []);
+  const activeMood = MOODS.find((m) => m.id === moodId) ?? MOODS[0];
+  const ranked = getRankedSnacks(moodId);
+  const topId = ranked[0]?.id;
 
-  const handleDraw = (mood: Mood) => {
-    setSelectedMoodId(mood.id);
-    setPhase("drawing");
-    setResult(null);
-
+  const handleDispense = () => {
+    if (pulling) return;
+    setPulling(true);
     window.setTimeout(() => {
-      const top = getTopSnackByMood(mood.id) ?? null;
-      setResult(top);
-      setPhase("result");
+      router.push(`/result?mood=${moodId}`);
     }, 900);
   };
 
-  const handleReset = () => {
-    setPhase("idle");
-    setResult(null);
-    setSelectedMoodId(null);
-  };
-
   return (
-    <div className="grid w-full gap-8 lg:grid-cols-[1fr_360px]">
-      {/* 자판기 본체 */}
-      <div className="relative mx-auto w-full max-w-[480px]">
-        <div className="rounded-[36px] bg-gradient-to-b from-snack-700 to-snack-800 p-5 shadow-2xl ring-4 ring-snack-900/20">
-          {/* 상단 헤더 */}
-          <div className="mb-4 flex items-center justify-between rounded-2xl bg-snack-900/40 px-4 py-2 text-snack-50">
-            <span className="font-display text-xl tracking-wider">
-              탕비실 自販機
-            </span>
-            <span className="text-xs uppercase tracking-widest text-snack-200">
-              No. 001
-            </span>
+    <div className="relative px-4">
+      <div className="vending-body">
+        {/* 상단 헤더 */}
+        <div className="control-header">
+          <div className="font-display text-sm tracking-tight text-butter-300">
+            🍿 SNACK PICK
           </div>
-
-          {/* 디스플레이 창 */}
-          <div className="rounded-2xl bg-gradient-to-b from-amber-50 to-amber-100 p-3 shadow-inner ring-2 ring-snack-900/30">
-            <div className="grid grid-cols-3 gap-2">
-              {slotSnacks.map((snack) => {
-                const isResult = result?.id === snack.id;
-                return (
-                  <div
-                    key={snack.id}
-                    className={`relative flex aspect-square flex-col items-center justify-center rounded-xl bg-white/80 text-center shadow-sm ring-1 transition-all duration-300 ${
-                      isResult
-                        ? "scale-105 ring-2 ring-snack-500 shadow-lg"
-                        : "ring-snack-200"
-                    } ${phase === "drawing" ? "animate-pulse" : ""}`}
-                  >
-                    <span className="text-3xl">{snack.emoji}</span>
-                    <span className="mt-1 line-clamp-1 px-1 text-[10px] font-medium text-neutral-600">
-                      {snack.name}
-                    </span>
-                    {isResult && (
-                      <span className="absolute -right-1 -top-1 rounded-full bg-snack-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow">
-                        1위
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* 배출구 */}
-          <div className="mt-4 rounded-2xl bg-snack-900/60 p-3">
-            <div className="flex h-20 items-center justify-center rounded-xl bg-black/40 ring-2 ring-snack-900/40">
-              {phase === "idle" && (
-                <p className="text-xs text-snack-200">
-                  무드를 골라 1위 간식을 뽑아보세요
-                </p>
-              )}
-              {phase === "drawing" && (
-                <p className="animate-pulse text-sm text-snack-100">
-                  탕이가 고르는 중...
-                </p>
-              )}
-              {phase === "result" && result && (
-                <div className="flex items-center gap-3 text-snack-50">
-                  <span className="text-4xl">{result.emoji}</span>
-                  <div className="text-left">
-                    <p className="font-display text-lg leading-none">
-                      {result.name}
-                    </p>
-                    <p className="text-xs text-snack-200">{result.brand}</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 오른쪽 조작 패널 */}
-      <div className="flex flex-col gap-4">
-        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-snack-100">
-          <div className="flex items-center gap-3">
-            <TangiMascot
-              size={64}
-              mood={
-                phase === "drawing"
-                  ? "thinking"
-                  : phase === "result"
-                    ? "excited"
-                    : "default"
-              }
-            />
-            <div>
-              <p className="font-display text-xl text-snack-700">탕이</p>
-              <p className="text-sm text-neutral-600">
-                {phase === "idle" && "오늘 기분이 어때요?"}
-                {phase === "drawing" && "음... 잠깐만요!"}
-                {phase === "result" && "이거 어때요? 1위픽이에요!"}
-              </p>
-            </div>
+          <div className="flex gap-1">
+            <div className="h-2 w-2 rounded-full bg-[#51CF66] shadow-[0_0_6px_#51CF66]" />
+            <div className="h-2 w-2 rounded-full bg-butter-300" />
+            <div className="h-2 w-2 rounded-full bg-cocoa-600" />
           </div>
         </div>
 
-        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-snack-100">
-          <p className="mb-3 text-sm font-semibold text-neutral-700">
-            무드 선택
-          </p>
-          <div className="grid grid-cols-2 gap-2">
-            {moods.map((mood) => {
-              const isActive = selectedMoodId === mood.id;
+        {/* 디스플레이 글래스 */}
+        <div className="vending-glass mb-3">
+          {[0, 1].map((row) => (
+            <div key={row} className={row === 0 ? "relative mb-2" : "relative"}>
+              <div className="relative z-10 flex justify-around py-1.5">
+                {SNACKS.slice(row * 3, row * 3 + 3).map((snack, i) => {
+                  const isTop = topId === snack.id;
+                  return (
+                    <div
+                      key={snack.id}
+                      className={`flex-1 text-center ${
+                        pulling && isTop ? "animate-shake" : ""
+                      }`}
+                    >
+                      <div
+                        className={`relative mx-auto flex h-[50px] w-[46px] items-center justify-center border-2 border-cocoa-600 text-[22px] transition-all ${
+                          isTop && !pulling ? "-translate-y-0.5" : ""
+                        }`}
+                        style={{
+                          background: snack.color,
+                          borderRadius: "6px 6px 4px 4px",
+                          boxShadow: isTop
+                            ? `0 0 16px ${activeMood.color}`
+                            : "0 2px 4px rgba(0,0,0,0.2)",
+                        }}
+                      >
+                        <div className="absolute left-0.5 top-0.5 h-6 w-2 rounded-sm bg-white/40" />
+                        <span>{snack.emoji}</span>
+                        {isTop && (
+                          <span className="absolute -right-2 -top-2 rotate-[8deg] rounded-full border-[1.5px] border-cocoa-600 bg-butter-400 px-1.5 py-0.5 text-[8px] font-black text-cocoa-600">
+                            HOT
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1 inline-block rounded bg-black/40 px-1 py-0.5 font-mono text-[8px] font-extrabold tracking-widest text-white">
+                        {ROW_LABELS[row]}
+                        {i + 1}
+                      </div>
+                      <div className="mt-0.5 text-[9px] font-bold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                        {snack.name}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-1 h-0.5 bg-black/40 shadow-[0_1px_2px_rgba(0,0,0,0.3)]" />
+            </div>
+          ))}
+        </div>
+
+        {/* 컨트롤 패널 */}
+        <div className="control-panel">
+          <div className="mb-2 font-mono text-[9px] font-extrabold tracking-wider text-butter-300">
+            ▸ SELECT YOUR MOOD
+          </div>
+          <div className="mb-2.5 grid grid-cols-3 gap-1.5">
+            {MOODS.map((m) => {
+              const active = moodId === m.id;
               return (
                 <button
-                  key={mood.id}
+                  key={m.id}
                   type="button"
-                  onClick={() => handleDraw(mood)}
-                  disabled={phase === "drawing"}
-                  className={`flex flex-col items-start rounded-xl border-2 px-3 py-2 text-left transition-all disabled:cursor-wait ${
-                    isActive
-                      ? "border-snack-500 bg-snack-50"
-                      : "border-snack-100 bg-white hover:border-snack-300 hover:bg-snack-50"
+                  onClick={() => setMoodId(m.id)}
+                  className={`rounded-md border-2 px-1 py-2 transition-all ${
+                    active
+                      ? "translate-y-px border-butter-300"
+                      : "border-cocoa-700 bg-cocoa-500"
                   }`}
+                  style={
+                    active
+                      ? {
+                          background: m.color,
+                          boxShadow: `inset 0 -2px 0 rgba(0,0,0,0.2), 0 0 12px ${m.color}88`,
+                        }
+                      : {
+                          boxShadow:
+                            "inset 0 -2px 0 rgba(0,0,0,0.3), 0 2px 0 #1a0d05",
+                        }
+                  }
                 >
-                  <span className="text-xl">{mood.emoji}</span>
-                  <span className="mt-1 text-sm font-semibold text-neutral-800">
-                    {mood.label}
-                  </span>
-                  <span className="text-[11px] leading-tight text-neutral-500">
-                    {mood.description}
-                  </span>
+                  <div className="mb-0.5 text-lg">{m.emoji}</div>
+                  <div
+                    className={`font-mono text-[8px] font-extrabold tracking-wider ${
+                      active ? "text-cocoa-600" : "text-butter-300"
+                    }`}
+                  >
+                    {m.btn}
+                  </div>
+                  <div
+                    className={`mt-0.5 text-[9px] font-bold ${
+                      active ? "text-cocoa-600" : "text-butter-300/80"
+                    }`}
+                  >
+                    {m.label}
+                  </div>
                 </button>
               );
             })}
           </div>
+
+          <button
+            type="button"
+            onClick={handleDispense}
+            disabled={pulling}
+            className="pick-btn"
+          >
+            {pulling ? "🎰 뽑는 중..." : "🎯 PICK!"}
+          </button>
         </div>
 
-        {phase === "result" && result && (
-          <div className="rounded-2xl bg-snack-500 p-5 text-white shadow-lg">
-            <p className="text-xs uppercase tracking-widest text-snack-100">
-              오늘의 픽
-            </p>
-            <p className="mt-1 font-display text-2xl">{result.name}</p>
-            <p className="mt-2 text-sm text-snack-50">{result.description}</p>
-            <p className="mt-3 text-xs text-snack-100">
-              👍 {result.votes.toLocaleString()}명이 추천했어요
-            </p>
-            <button
-              type="button"
-              onClick={handleReset}
-              className="mt-4 w-full rounded-xl bg-white px-4 py-2 text-sm font-semibold text-snack-700 transition hover:bg-snack-50"
-            >
-              다시 뽑기
-            </button>
-          </div>
-        )}
+        {/* 배출구 */}
+        <div className="dispenser-slot mt-2.5">▼ PICK UP HERE ▼</div>
+      </div>
+
+      {/* 탕이 마스코트 */}
+      <div className="absolute -bottom-5 right-2 animate-bob">
+        <TangiMascot size={68} mood={pulling ? "wink" : "happy"} />
       </div>
     </div>
   );

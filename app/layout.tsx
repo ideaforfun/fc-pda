@@ -1,23 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { SiteHeader } from "@/components/SiteHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { blackHanSans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "탕비실 - 직장인 간식 추천 & 익명 커뮤니티",
   description:
-    "사무실 탕비실에서 만나는 간식 추천과 솔직한 직장인들의 익명 이야기.",
+    "기분 따라 1위 간식을 뽑아주는 자판기, 그리고 탕이한테만 털어놓는 익명 고백.",
   keywords: ["탕비실", "간식 추천", "직장인", "익명 커뮤니티", "오피스 스낵"],
   openGraph: {
     title: "탕비실",
-    description: "직장인을 위한 간식 추천 + 익명 커뮤니티",
+    description: "직장인을 위한 간식 자판기 + 익명 고백",
     type: "website",
     locale: "ko_KR",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ff7a10",
+  themeColor: "#FFD93D",
   width: "device-width",
   initialScale: 1,
 };
@@ -29,12 +29,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={blackHanSans.variable}>
-      <body className="min-h-screen bg-snack-50 font-sans text-neutral-900 antialiased">
-        <SiteHeader />
-        {children}
-        <footer className="mx-auto mt-16 max-w-5xl px-6 pb-10 text-center text-xs text-neutral-500">
-          탕비실 · Next.js 14 · Tailwind CSS · Vercel
-        </footer>
+      <body className="min-h-screen bg-gradient-to-b from-cocoa-100 via-cocoa-200 to-cocoa-300 font-sans text-cocoa-600 antialiased">
+        <div className="floor-pattern pointer-events-none fixed bottom-0 left-0 right-0 z-0 h-[120px]" />
+        <div className="relative z-10 mx-auto min-h-screen max-w-[430px] pb-24">
+          {children}
+        </div>
+        <BottomNav />
       </body>
     </html>
   );
