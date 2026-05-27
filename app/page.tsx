@@ -1,55 +1,59 @@
 import Link from "next/link";
 import { VendingMachine } from "@/components/VendingMachine";
+import { TangiMascot } from "@/components/TangiMascot";
 import { CONFESSIONS } from "@/lib/data";
 
 export default function HomePage() {
   return (
-    <main className="pb-2">
-      <div className="px-5 pb-3 pt-6 text-center">
-        <div className="text-[9px] font-extrabold tracking-[3px] text-cocoa-400">
-          OFFICE SNACK MACHINE
-        </div>
-        <h1 className="mt-1 font-display text-[46px] leading-none tracking-tighter text-cocoa-600 [text-shadow:3px_3px_0_#FFE066]">
+    <main className="pb-4">
+      {/* Hero — bold typography */}
+      <div className="px-6 pb-2 pt-14">
+        <p className="text-[10px] font-bold uppercase tracking-[3px] text-peach-400">
+          office snack machine
+        </p>
+        <h1 className="mt-1 font-display text-[72px] leading-[0.85] tracking-tighter text-ink-800">
           탕비실
         </h1>
+        <p className="mt-3 text-[17px] font-medium leading-snug text-ink-400">
+          기분 따라 뽑는
+          <br />
+          <span className="text-ink-600">1위 간식 자판기</span>
+        </p>
+      </div>
+
+      {/* Tangi speech */}
+      <div className="mb-6 flex items-center gap-3 px-5">
+        <TangiMascot size={48} />
+        <div className="animate-bubble-in rounded-2xl rounded-bl-md bg-white px-4 py-2.5 shadow-soft">
+          <p className="text-[13px] font-semibold text-ink-600">
+            기분 골라서 PICK 누르면
+            <br />
+            1위 간식 알려줄게! 🍭
+          </p>
+        </div>
       </div>
 
       <VendingMachine />
 
-      <div className="flex px-4 pb-4 pt-8">
-        <div className="relative max-w-[240px] animate-bubble-in rounded-[16px_16px_16px_4px] bg-white px-3.5 py-2.5 text-[13px] font-bold text-cocoa-600 shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
-          <div className="mb-0.5 text-[9px] font-extrabold tracking-wide text-tomato-400">
-            탕이
-          </div>
-          기분 골라서 PICK 누르면
-          <br />이 상황 1위 간식 알려줄게! 🍭
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2.5 px-4">
+      {/* Quick access */}
+      <div className="mt-6 grid grid-cols-2 gap-3 px-5">
         <Link
           href="/feed"
-          className="chunky-card cursor-pointer px-3.5 py-3.5 text-left"
+          className="rounded-2xl bg-white p-4 shadow-soft transition hover:shadow-card"
         >
-          <div className="mb-1 text-2xl">🕶️</div>
-          <div className="text-[13px] font-extrabold text-cocoa-600">
-            익명 고백
-          </div>
-          <div className="mt-0.5 text-[10px] text-cocoa-400">
+          <span className="text-2xl">🕶️</span>
+          <p className="mt-2 text-sm font-bold text-ink-700">익명 고백</p>
+          <p className="mt-0.5 text-[11px] text-ink-400">
             {CONFESSIONS.length}개의 이야기
-          </div>
+          </p>
         </Link>
         <Link
           href="/result?mood=scolded"
-          className="chunky-card cursor-pointer bg-butter-300 px-3.5 py-3.5 text-left"
+          className="rounded-2xl bg-peach-50 p-4 shadow-soft transition hover:shadow-card"
         >
-          <div className="mb-1 text-2xl">🏆</div>
-          <div className="text-[13px] font-extrabold text-cocoa-600">
-            이번주 1위
-          </div>
-          <div className="mt-0.5 text-[10px] text-cocoa-400">
-            혼났을 때 픽 보러가기
-          </div>
+          <span className="text-2xl">🏆</span>
+          <p className="mt-2 text-sm font-bold text-ink-700">이번주 1위</p>
+          <p className="mt-0.5 text-[11px] text-ink-400">혼났을 때 픽</p>
         </Link>
       </div>
     </main>

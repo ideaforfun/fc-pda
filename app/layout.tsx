@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFD93D",
+  themeColor: "#FF6B3D",
   width: "device-width",
   initialScale: 1,
 };
@@ -29,9 +29,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={blackHanSans.variable}>
-      <body className="min-h-screen bg-gradient-to-b from-cocoa-100 via-cocoa-200 to-cocoa-300 font-sans text-cocoa-600 antialiased">
-        <div className="floor-pattern pointer-events-none fixed bottom-0 left-0 right-0 z-0 h-[120px]" />
-        <div className="relative z-10 mx-auto min-h-screen max-w-[430px] pb-24">
+      <body className="min-h-screen bg-gradient-to-b from-peach-50 via-white to-peach-50/50 font-sans text-ink-800 antialiased">
+        <div className="relative mx-auto min-h-screen max-w-[430px] pb-24">
           {children}
         </div>
         <BottomNav />

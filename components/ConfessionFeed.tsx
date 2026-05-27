@@ -24,7 +24,13 @@ export function ConfessionFeed() {
     const trimmed = postText.trim();
     if (!trimmed) return;
     setConfessions((prev) => [
-      { id: Date.now(), mood: postMood, text: trimmed, likes: 0, time: "방금 전" },
+      {
+        id: Date.now(),
+        mood: postMood,
+        text: trimmed,
+        likes: 0,
+        time: "방금 전",
+      },
       ...prev,
     ]);
     setPostText("");
@@ -33,11 +39,9 @@ export function ConfessionFeed() {
 
   return (
     <>
-      <div className="chunky-card mb-4 p-3.5">
-        <div className="mb-2 text-[10px] font-extrabold tracking-wider text-cocoa-400">
-          🕶️ 익명 보장
-        </div>
-        <div className="mb-2.5 flex flex-wrap gap-1.5">
+      {/* Post box */}
+      <div className="mb-5 rounded-2xl bg-white p-4 shadow-soft">
+        <div className="mb-3 flex flex-wrap gap-1.5">
           {MOODS.map((m) => {
             const active = postMood === m.id;
             return (
@@ -45,8 +49,10 @@ export function ConfessionFeed() {
                 key={m.id}
                 type="button"
                 onClick={() => setPostMood(m.id)}
-                className={`rounded-full border-2 px-2.5 py-1 text-[11px] font-extrabold text-cocoa-600 ${
-                  active ? "border-cocoa-600" : "border-neutral-200 bg-white"
+                className={`rounded-full px-3 py-1.5 text-[11px] font-bold transition ${
+                  active
+                    ? "text-white"
+                    : "bg-ink-50 text-ink-500 hover:bg-ink-100"
                 }`}
                 style={active ? { background: m.color } : undefined}
               >
@@ -67,12 +73,12 @@ export function ConfessionFeed() {
             }}
             placeholder="탕이한테만 살짝 말해줘..."
             rows={2}
-            className="flex-1 resize-none rounded-lg border-2 border-cocoa-600 bg-cocoa-50 px-3 py-2.5 text-[13px] font-semibold leading-relaxed text-cocoa-600 outline-none placeholder:font-medium placeholder:text-neutral-400"
+            className="flex-1 resize-none rounded-xl bg-ink-50 px-3.5 py-2.5 text-[13px] font-medium text-ink-700 outline-none transition placeholder:text-ink-300 focus:bg-white focus:ring-2 focus:ring-peach-200"
           />
           <button
             type="button"
             onClick={handlePost}
-            className="self-stretch rounded-lg border-2 border-cocoa-600 bg-butter-300 px-4 font-display text-lg text-cocoa-600 shadow-[0_3px_0_#3D2914]"
+            className="self-stretch rounded-xl bg-peach-500 px-4 text-lg font-bold text-white transition hover:bg-peach-600"
             aria-label="고백 올리기"
           >
             ↑
@@ -80,49 +86,56 @@ export function ConfessionFeed() {
         </div>
       </div>
 
-      {confessions.map((c, idx) => {
-        const m = getMoodById(c.mood);
-        const isLiked = !!liked[c.id];
-        const isFresh = idx === 0 && c.time === "방금 전";
-        return (
-          <div
-            key={c.id}
-            className={`chunky-card mb-2.5 p-3.5 ${isFresh ? "animate-pop-in" : ""}`}
-          >
-            <div className="mb-2 flex items-center gap-1.5">
-              <div
-                className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-cocoa-600 text-base"
-                style={{ background: m?.color }}
-              >
-                {m?.emoji}
-              </div>
-              <div>
-                <div className="text-[11px] font-extrabold text-cocoa-600">
-                  {m?.label}일 때
-                </div>
-                <div className="text-[9px] font-bold text-neutral-400">{c.time}</div>
-              </div>
-            </div>
-            <p className="mb-2.5 text-[13px] font-semibold leading-relaxed text-cocoa-600">
-              {c.text}
-            </p>
-            <button
-              type="button"
-              onClick={() =>
-                setLiked((prev) => ({ ...prev, [c.id]: !prev[c.id] }))
-              }
-              className={`rounded-full border-2 border-cocoa-600 px-2.5 py-1 text-[11px] font-extrabold text-cocoa-600 ${
-                isLiked ? "bg-butter-300" : "bg-transparent"
+      {/* List */}
+      <div className="flex flex-col gap-3">
+        {confessions.map((c, idx) => {
+          const m = getMoodById(c.mood);
+          const isLiked = !!liked[c.id];
+          const isFresh = idx === 0 && c.time === "방금 전";
+          return (
+            <div
+              key={c.id}
+              className={`rounded-2xl bg-white p-4 shadow-soft ${
+                isFresh ? "animate-pop-in" : ""
               }`}
             >
-              {isLiked ? "❤️" : "🤍"} {c.likes + (isLiked ? 1 : 0)}
-            </button>
-          </div>
-        );
-      })}
+              <div className="mb-2.5 flex items-center gap-2">
+                <span
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                  style={{ background: m?.color }}
+                >
+                  {m?.emoji}
+                </span>
+                <div>
+                  <p className="text-[12px] font-bold text-ink-700">
+                    {m?.label}일 때
+                  </p>
+                  <p className="text-[10px] text-ink-400">{c.time}</p>
+                </div>
+              </div>
+              <p className="mb-3 text-[14px] font-medium leading-relaxed text-ink-700">
+                {c.text}
+              </p>
+              <button
+                type="button"
+                onClick={() =>
+                  setLiked((p) => ({ ...p, [c.id]: !p[c.id] }))
+                }
+                className={`rounded-full px-3 py-1 text-[12px] font-bold transition ${
+                  isLiked
+                    ? "bg-peach-50 text-peach-500"
+                    : "bg-ink-50 text-ink-400 hover:bg-ink-100"
+                }`}
+              >
+                {isLiked ? "❤️" : "🤍"} {c.likes + (isLiked ? 1 : 0)}
+              </button>
+            </div>
+          );
+        })}
+      </div>
 
       {toast && (
-        <div className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 animate-toast-in whitespace-nowrap rounded-full border-2 border-butter-300 bg-cocoa-600 px-5 py-2.5 text-[13px] font-extrabold text-butter-300 shadow-[0_4px_16px_rgba(0,0,0,0.25)]">
+        <div className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 animate-toast-in whitespace-nowrap rounded-full bg-ink-800 px-5 py-2.5 text-[13px] font-bold text-white shadow-card">
           {toast}
         </div>
       )}

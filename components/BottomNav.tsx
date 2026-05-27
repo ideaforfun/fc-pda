@@ -18,11 +18,8 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-1/2 z-50 flex w-full max-w-[430px] -translate-x-1/2 border-t-[3px] border-cocoa-800 bg-cocoa-600"
-      style={{
-        paddingTop: 10,
-        paddingBottom: "max(10px, env(safe-area-inset-bottom))",
-      }}
+      className="fixed bottom-0 left-1/2 z-50 flex w-full max-w-[430px] -translate-x-1/2 rounded-t-2xl border-t border-ink-100/60 bg-white/70 backdrop-blur-xl"
+      style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
     >
       {TABS.map((tab) => {
         const active = isActive(tab.href, pathname);
@@ -30,12 +27,12 @@ export function BottomNav() {
           <Link
             key={tab.href}
             href={tab.href}
-            className={`flex flex-1 flex-col items-center gap-0.5 rounded-lg py-1 transition ${
-              active ? "bg-butter-300/15 text-butter-300" : "text-cocoa-400"
+            className={`flex flex-1 flex-col items-center gap-0.5 pb-1 pt-3 transition ${
+              active ? "text-peach-500" : "text-ink-400"
             }`}
           >
             <span className="text-[22px]">{tab.emoji}</span>
-            <span className="text-[10px] font-extrabold">{tab.label}</span>
+            <span className="text-[10px] font-bold">{tab.label}</span>
           </Link>
         );
       })}

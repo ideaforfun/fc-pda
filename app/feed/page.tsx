@@ -9,23 +9,21 @@ export const metadata = {
 
 export default function FeedPage() {
   return (
-    <main className="px-4 pb-4 pt-6">
+    <main className="px-5 pb-4 pt-10">
       <Link
         href="/"
-        className="mb-4 inline-block text-[13px] font-extrabold text-cocoa-600"
+        className="mb-5 inline-flex items-center gap-1 text-sm font-bold text-ink-400 transition hover:text-ink-600"
       >
         ← 자판기로
       </Link>
 
-      <div className="mb-4 flex items-center gap-2">
-        <TangiMascot size={42} />
+      <div className="mb-6 flex items-center gap-3">
+        <TangiMascot size={44} />
         <div>
-          <h1 className="font-display text-[26px] leading-none tracking-tight text-cocoa-600">
+          <h1 className="font-display text-[40px] leading-none tracking-tight text-ink-800">
             익명 고백
           </h1>
-          <p className="mt-0.5 text-[11px] font-bold text-cocoa-400">
-            탕이만 알아요 🤫
-          </p>
+          <p className="mt-1 text-sm text-ink-400">탕이만 알아요 🤫</p>
         </div>
       </div>
 
