@@ -18,6 +18,26 @@
 
   body {
     word-break: keep-all;
+    -webkit-tap-highlight-color: transparent;
     font-family: var(--font-pretendard);
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  textarea::placeholder,
+  input::placeholder {
+    color: #c0c1ca;
+  }
+}
+
+@layer components {
+  /* 누름 피드백 (브리프 4: .press) */
+  .press {
+    transition: transform 0.1s ease;
+  }
+  .press:active {
+    transform: scale(0.96);
   }
 }

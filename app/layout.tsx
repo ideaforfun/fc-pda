@@ -1,25 +1,29 @@
 import type { Metadata, Viewport } from "next";
 import { BottomNav } from "@/components/BottomNav";
+import { Toast } from "@/components/Toast";
+import { TangbisilProvider } from "@/lib/state";
 import { blackHanSans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "탕비실 - 직장인 간식 추천 & 익명 커뮤니티",
+  title: "탕비실 — 오피스 스낵 라운지",
   description:
-    "기분 따라 1위 간식을 뽑아주는 자판기, 그리고 탕이한테만 털어놓는 익명 고백.",
-  keywords: ["탕비실", "간식 추천", "직장인", "익명 커뮤니티", "오피스 스낵"],
+    "오늘 기분, 간식이 알아요. 기분 따라 뽑고, 투표하고, 우리 회사 간식 랭킹 완성!",
   openGraph: {
-    title: "탕비실",
-    description: "직장인을 위한 간식 자판기 + 익명 고백",
+    title: "탕비실 — 오피스 스낵 라운지",
+    description:
+      "오늘 기분, 간식이 알아요. 기분 따라 뽑고, 투표하고, 우리 회사 간식 랭킹 완성!",
     type: "website",
     locale: "ko_KR",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FF6B3D",
+  themeColor: "#F5F6F8",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -29,11 +33,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={blackHanSans.variable}>
-      <body className="min-h-screen bg-gradient-to-b from-peach-50 via-white to-peach-50/50 font-sans text-ink-800 antialiased">
-        <div className="relative mx-auto min-h-screen max-w-[430px] pb-24">
-          {children}
-        </div>
-        <BottomNav />
+      <body className="min-h-screen bg-ink-50 font-sans text-ink-800 antialiased">
+        <TangbisilProvider>
+          <div className="mx-auto min-h-screen max-w-[430px]">{children}</div>
+          <BottomNav />
+          <Toast />
+        </TangbisilProvider>
       </body>
     </html>
   );
